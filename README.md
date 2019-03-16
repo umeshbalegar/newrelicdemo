@@ -71,6 +71,20 @@ OR (below is for autoshutdown feature)
 
 docker run umeshbalegar/serverclient:demo autoshutdown
 ```
+
+After running the container if you want to look at the "numbers.log" file, you can get into docker shell by executing below commands. 
+
+```bash
+docker ps
+(this lists all the running containers)
+
+docker exec -ti <containerId from above cmd> /bin/sh
+(this gets you into the docker shell)
+
+cat ~/numbers.log
+(this prints the file on console)
+```
+
 All the required test files are in test folder. 
 
 
