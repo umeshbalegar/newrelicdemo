@@ -64,9 +64,13 @@ and then you can run this container using docker run command.
 I have an optimized docker image created and uploaded in dockerhub, you can pull that image to start quick. [serverclient](https://cloud.docker.com/u/umeshbalegar/repository/docker/umeshbalegar/serverclient)
 ```bash
 docker pull umeshbalegar/serverclient:demo
-docker run --name serverclient -it umeshbalegar/serverclient:demo
-```
 
+docker run umeshbalegar/serverclient:demo
+
+OR (below is for autoshutdown feature)
+
+docker run umeshbalegar/serverclient:demo autoshutdown
+```
 All the required test files are in test folder. 
 
 
