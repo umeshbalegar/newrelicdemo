@@ -3,11 +3,15 @@
 ## This application demonstrates the Server - Client using Java NIO.
 
 ### Server starter file is ServerImpl.java in com.newrelic.nio.server package
-This class is a concrete implementation of com.newrelic.nio.server.Server Abstract class, which pretty much sets up all the necessary resources for the Server to start. 
-1: Initilizes the NIO Selector and opens the ServerSocket for channels. 
-2: Sets up an executorservice for 5 concurrent connections (acceptexecutor). 
-3: Sets up an executorservice for ReportingService to log report every 10s.
-4: Provides 2 additional hooks for processing the data and clean up for the concrete class to implement. 
+This class is a concrete implementation of the server, which provides the implementation for processing the data and cleanup on shutdown methods. 
+
+
+### com.newrelic.nio.server.Server.java 
+Abstract class which pretty much sets up all the necessary resources for the Server to start. 
+- Initilizes the NIO Selector and opens the ServerSocket for channels. 
+- Sets up an executorservice for 5 concurrent connections (acceptexecutor). 
+- Sets up an executorservice for ReportingService to log report every 10s.
+- Provides 2 additional hooks for processing the data and clean up for the concrete class to implement. 
 
 
 ### Package com.newrelic.nio.handlers has all the EventHandlers
