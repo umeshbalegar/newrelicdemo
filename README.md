@@ -53,6 +53,12 @@ No Autoshutdown mode
 java -jar target/serverclient-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
+After the jar executes you can view the "numbers.log" file contents by executing the below command.
+
+**Note:** By default the numbers.log file is written to users home directory. 
+```bash
+cat ~/numbers.log
+```
 
 
 # Building Docker image
