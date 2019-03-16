@@ -37,28 +37,16 @@ public class AcceptableTask implements Runnable{
 
 	@Override
 	public void run() {
-	
 		try {
 
 			socketChannel.configureBlocking(false);
 			s.setTcpNoDelay( true );
 				
 			socketChannel.register(selector, SelectionKey.OP_READ);
-			
-//			final ByteBuffer firstByte = ByteBuffer.allocate(1);
-//			while (firstByte.hasRemaining()) {
-//				if (firstByte.hasRemaining()) {
-//                    tmpSelector = Selector.open();
-//                    socketChannel.register(tmpSelector, SelectionKey.OP_READ);
-//                    selector.select();
-//				}
-//			}
 						
 		}catch(IOException e) {
 			ServerUtil.closeSelector(selector);
 		}
 		
 	}
-    
-    
 }
