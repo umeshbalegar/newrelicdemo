@@ -3,7 +3,6 @@ package com.newrelic.nio.server;
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.util.Arrays;
 
 import com.newrelic.nio.handlers.BatchTotalUpdateHandler;
 import com.newrelic.nio.handlers.IEventHandler;
@@ -38,31 +37,30 @@ public class ServerImpl extends Server {
 
 		// Counting only those values which are valid for Duplicate count and Total count match. 
 		// Anything which does not have length 9 will be considered invalid as we are not storing them. 
-		long validInputCount = Arrays.stream(list)
-								.filter(item -> item.length() == 9)
-								.count();
+		long validInputCount = 0;
 		
-		//Downsizing long to int, if this count goes beyond int size, then we could loose some bits.
-		batchTotalHandler.handleData(Math.toIntExact(validInputCount));  
-
 		for (String item : list) {
 			item = item.trim();
 			if (item.equals(POISON_PILL)) {
 				needsShutdown = true;
 				logger.fatal("Poision Value passed, Shutting down server and all connections");
 				break;
-			} else if (item.length() != 9) {
-				logger.error("Invalid data, closing connection");
+			} else if (item.length() != 9 || !item.matches("\\d+")) {
+				logger.error("Invalid data "+item+", closing connection");
 				break;
 			} else {
 				int index = 0;
 				while (index < item.length() && item.charAt(index) - '0' == 0) {
 					index++;
 				}
+				validInputCount++;
 				numberHandler.handleData(item);
 			}
 		}
 
+		//Downsizing long to int, if this count goes beyond int size, then we could loose some bits.
+		batchTotalHandler.handleData(Math.toIntExact(validInputCount)); 
+		
 		key.cancel();
 		channel.socket().close();
 		channel.close();
