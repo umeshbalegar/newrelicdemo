@@ -1,20 +1,25 @@
-FROM maven:3.5.2-jdk-8-alpine AS MAVEN_TOOL_CHAIN
+FROM maven:3.5-jdk-8 as maven
 
-COPY pom.xml /tmp/
+# copy the project files
+COPY ./pom.xml ./pom.xml
 
-COPY src /tmp/src/
+# build all dependencies
+RUN mvn dependency:go-offline -B
 
-WORKDIR /tmp/
+# copy your other files
+COPY ./src ./src
 
+# build for release
 RUN mvn clean compile assembly:single
 
-FROM openjdk:8-jre-alpine
+# final base image
+FROM openjdk:8u171-jre-alpine
 
-WORKDIR /
+# set deployment directory
+WORKDIR /my-project
 
-COPY --from=MAVEN_TOOL_CHAIN /tmp/target/serverclient-0.0.1-SNAPSHOT-jar-with-dependencies.jar newRelic.jar
+# copy over the built artifact from the maven image
+COPY --from=maven target/serverclient-*.jar ./newRelic.jar
 
-RUN rm -rf ./tmp
-
+# set the startup command to run your binary
 CMD ["java","-jar","newRelic.jar"]
-
