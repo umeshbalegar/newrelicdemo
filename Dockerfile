@@ -12,14 +12,17 @@ COPY ./src ./src
 # build for release
 RUN mvn clean compile assembly:single
 
-# final base image
+# our final base image
 FROM openjdk:8u171-jre-alpine
 
 # set deployment directory
 WORKDIR /my-project
 
 # copy over the built artifact from the maven image
-COPY --from=maven target/serverclient-*.jar ./newRelic.jar
+COPY --from=maven target/serverclient-*.jar ./serverclient.jar
 
 # set the startup command to run your binary
-CMD ["java","-jar","newRelic.jar"]
+
+ENTRYPOINT ["java","-jar","serverclient.jar"]
+
+CMD [""]
