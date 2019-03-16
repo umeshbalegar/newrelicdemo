@@ -19,7 +19,7 @@ import com.newrelic.nio.server.util.ServerUtil;
 
 public class MonitorQueueService implements IService{
 	final static Logger logger = Logger.getLogger(MonitorQueueService.class);
-	private static final String logFilePath = "numbers.log";
+	private static final String logFilePath = "/numbers.log";
     private static MonitorQueueService instance = null;
     private static LinkedBlockingQueue<String> eventQueue = null;
     private ExecutorService writerService;
@@ -94,8 +94,8 @@ public class MonitorQueueService implements IService{
 
     	@Override
         public void run() {
-        	
-        	try(PrintWriter pw = new PrintWriter(logFilePath);){
+        	String home = System.getProperty("user.home")+logFilePath;
+        	try(PrintWriter pw = new PrintWriter(home);){
                 while(true) {
                     String eventData = null;
                     eventData = eventQueue.take();
