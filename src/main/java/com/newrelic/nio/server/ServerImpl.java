@@ -10,7 +10,7 @@ import com.newrelic.nio.handlers.NumberStorageHandler;
 
 public class ServerImpl extends Server {
 
-	protected static final String POISON_PILL = "POISON_PILL";
+	protected static final String POISON_PILL = "terminate";
 	IEventHandler<String> numberHandler;
 	IEventHandler<Integer> batchTotalHandler;
 
@@ -39,9 +39,9 @@ public class ServerImpl extends Server {
 		// Anything which does not have length 9 will be considered invalid as we are not storing them. 
 		long validInputCount = 0;
 		
-		for (String item : list) {
-			item = item.trim();
-			if (item.equals(POISON_PILL)) {
+		for (int i = 0 ; i < list.length ; i++) {
+			String item = list[i];
+			if (item.equals(POISON_PILL) && !((fromclient.indexOf(POISON_PILL)+POISON_PILL.length()) > fromclient.length()-1)) {
 				needsShutdown = true;
 				logger.fatal("Poision Value passed, Shutting down server and all connections");
 				break;
