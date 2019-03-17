@@ -37,29 +37,36 @@ public class ServerImpl extends Server {
 
 		// Counting only those values which are valid for Duplicate count and Total count match. 
 		// Anything which does not have length 9 will be considered invalid as we are not storing them. 
-		long validInputCount = 0;
+		int validInputCount = 0;
 		
 		for (int i = 0 ; i < list.length ; i++) {
 			String item = list[i];
 			if (item.equals(POISON_PILL) && !((fromclient.indexOf(POISON_PILL)+POISON_PILL.length()) > fromclient.length()-1)) {
+				
 				needsShutdown = true;
 				logger.fatal("Poision Value passed, Shutting down server and all connections");
 				break;
+				
 			} else if (item.length() != 9 || !item.matches("\\d+")) {
+				
 				logger.error("Invalid data "+item+", closing connection");
 				break;
+				
 			} else {
+				
 				int index = 0;
 				while (index < item.length() && item.charAt(index) - '0' == 0) {
 					index++;
 				}
 				validInputCount++;
 				numberHandler.handleData(item);
+				
 			}
 		}
 
-		//Downsizing long to int, if this count goes beyond int size, then we could loose some bits.
-		batchTotalHandler.handleData(Math.toIntExact(validInputCount)); 
+		if(validInputCount > 0) {
+			batchTotalHandler.handleData(validInputCount);
+		}
 		
 		key.cancel();
 		channel.socket().close();
