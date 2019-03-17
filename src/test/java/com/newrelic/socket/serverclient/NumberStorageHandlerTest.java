@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.newrelic.nio.handlers.BatchTotalUpdateHandler;
 import com.newrelic.nio.handlers.NumberStorageHandler;
 
 import junit.framework.TestCase;
@@ -48,17 +47,13 @@ public class NumberStorageHandlerTest extends TestCase {
 	}
 
 	private NumberStorageHandler eHandler;
-	private BatchTotalUpdateHandler bHandler;
 	private List<String> items;
 	private int expectedCountInCache;
-	private int batchTotal;
 	private BufferedReader in = null;
 
 	public NumberStorageHandlerTest(Object[] i, Object[] expec) {
 		eHandler = new NumberStorageHandler();
-		bHandler = new BatchTotalUpdateHandler();
 		items = (List<String>) i[0];
-		batchTotal = (int) i[1];
 		expectedCountInCache = (int) expec[0];
 	}
 
