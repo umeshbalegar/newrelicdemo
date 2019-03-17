@@ -94,7 +94,9 @@ public class MonitorQueueService implements IService{
 
     	@Override
         public void run() {
+
     		String home = System.getProperty("user.home")+logFilePath;
+
         	try(PrintWriter pw = new PrintWriter(home);){
                 while(true) {
                     String eventData = null;
