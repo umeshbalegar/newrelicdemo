@@ -59,7 +59,8 @@ public class NumberStorageHandlerTest extends TestCase {
 
 	@Before
 	public void setUpEvenHandler() throws Exception {
-		File file = new File("numbers.log");
+		String home = System.getProperty("user.home")+"/numbers.log";
+		File file = new File(home);
 		in = new BufferedReader(new FileReader(file));
 	}
 

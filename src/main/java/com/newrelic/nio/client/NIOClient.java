@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 public class NIOClient {
 	final static Logger logger = Logger.getLogger(NIOClient.class);
-	public static int defaultByteBufferSize = 2000;
+	public static int defaultByteBufferSize = 32768;
 	private int port;
 	private String hostName;
 	private ByteBuffer bb ;
@@ -33,7 +33,7 @@ public class NIOClient {
 		hostName = host;
 		port = p;
 		bb = ByteBuffer.allocate(defaultByteBufferSize);
-		pingServer();
+//		pingServer();
 	}
 	
 	public NIOClient(String host, int p, boolean waitForServer) {
@@ -78,7 +78,8 @@ public class NIOClient {
 		bb.clear();
 		bb.put(request.getBytes());
 		bb.flip();
-		return sc.write(bb);
+		int x = sc.write(bb);
+		return x;
 	}
 	
 	private void readResponse() throws IOException {

@@ -43,4 +43,33 @@ public class TestUtils {
             executor.shutdownNow();
         }
     }
+    
+	public static String generateZeroPaddedNumbers(int starting) {
+		StringBuilder s = new StringBuilder();
+		
+		int i=starting;
+		while(i < starting+3200) {
+			if(i <= 9) {
+				s.append("00000000"+i+"\n");
+			}else if(i <= 99) {
+				s.append("0000000"+i+"\n");
+			}else if(i <= 999) {
+				s.append("000000"+i+"\n");
+			}else if(i <= 9999) {
+				s.append("00000"+i+"\n");
+			}else if(i <= 99999) {
+				s.append("0000"+i+"\n");
+			}else if(i <= 999999) {
+				s.append("000"+i+"\n");
+			}else if(i <= 9999999) {
+				s.append("00"+i+"\n");
+			}else if(i <= 99999999) {
+				s.append("0"+i+"\n");
+			}else {
+				s.append(i+"\n");
+			}
+			i++;
+		}
+		return s.toString();
+	}
 }

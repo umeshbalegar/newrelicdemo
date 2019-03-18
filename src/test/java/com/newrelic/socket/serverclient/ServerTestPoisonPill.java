@@ -61,7 +61,7 @@ public class ServerTestPoisonPill extends TestCase {
 		    for (Future<Boolean> fut : futures) {
 		    	fut.get();
 		    	assertEquals("Should be true for all pings : ", Boolean.valueOf(fut.get()), Boolean.TRUE);
-		    	assertEquals("Should not terminate as there is no newline character", ServerStatus.RUNNING, privateServ.status);
+		    	assertEquals("Should not terminate as there is no newline character", ServerStatus.RUNNING, privateServ.getStatus());
 		    }
 		    
 		    
@@ -89,7 +89,7 @@ public class ServerTestPoisonPill extends TestCase {
 		    
 		    Thread.sleep(3000);
 		    
-		    assertEquals("Should terminate as there is newline character", ServerStatus.STOPPED, privateServ.status);
+		    assertEquals("Should terminate as there is newline character", ServerStatus.STOPPED, privateServ.getStatus());
 		    
 		}catch(Exception e) {		
 			e.printStackTrace();

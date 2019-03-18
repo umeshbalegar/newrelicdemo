@@ -30,15 +30,40 @@ public class AppStarter {
 
 	    public Boolean call() throws IOException {
         	NIOClient client = new NIOClient("localhost", 4000);
-        	if(number < 10) {
-        		client.sendServer("31415926"+number+"\n777777777\n00700700"+number+"\n45600000O\n600000078\n89000000"+number);	
-        	}
-        	else {
-        		client.sendServer("3141592"+number+"\n777777777\n0070070"+number+"\n456000000\n600000078\n8900000"+number);
-        	}
+        	String input = generateZeroPaddedNumbers(number);
+        	client.sendServer(input);
 
             return Boolean.TRUE;
 	    }
+	}
+	
+	public static String generateZeroPaddedNumbers(int starting) {
+		StringBuilder s = new StringBuilder();
+		
+		int i=starting;
+		while(i < starting+1) {
+			if(i <= 9) {
+				s.append("00000000"+i+"\n");
+			}else if(i <= 99) {
+				s.append("0000000"+i+"\n");
+			}else if(i <= 999) {
+				s.append("000000"+i+"\n");
+			}else if(i <= 9999) {
+				s.append("00000"+i+"\n");
+			}else if(i <= 99999) {
+				s.append("0000"+i+"\n");
+			}else if(i <= 999999) {
+				s.append("000"+i+"\n");
+			}else if(i <= 9999999) {
+				s.append("00"+i+"\n");
+			}else if(i <= 99999999) {
+				s.append("0"+i+"\n");
+			}else {
+				s.append(i+"\n");
+			}
+			i++;
+		}
+		return s.toString();
 	}
 	
 	public static void main(String [] args) throws InterruptedException, ExecutionException {
@@ -48,13 +73,14 @@ public class AppStarter {
 			killServer = true;
 		}
 		
+		System.out.println("Running the server which gets pinged with 100 numbers");
+		
 		//Start Server
 		Server serv = new ServerImpl("localhost", 4000);
 		serv.start();
 
-	
 		
-		int size = 10;
+		int size = 100;
 	    ExecutorService threads = Executors.newFixedThreadPool(size);
 	    List<Callable<Boolean>> torun = new ArrayList<>(size);
 	    for (int i = 0; i < size; i++) {
@@ -71,6 +97,9 @@ public class AppStarter {
 	    for (Future<Boolean> fut : futures) {
 	        fut.get();
 	    }
+	    
+	    
+	    Thread.sleep(10000);
 	    
 	    
 	    if(killServer) {

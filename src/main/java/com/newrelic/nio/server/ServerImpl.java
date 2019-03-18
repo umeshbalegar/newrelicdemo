@@ -24,13 +24,15 @@ public class ServerImpl extends Server {
 	public void processBuffer(SelectionKey key, SocketChannel channel, int length) throws IOException {
 
 		readBuffer.flip();
-		byte[] data = new byte[1000];
+		readBuffer.clear();
+		
+		byte[] data = new byte[defaultBufferSize];
 		readBuffer.get(data, 0, length);
 		String fromclient = new String(data, 0, length, "UTF-8");
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Received: " + fromclient);
-		}
+//		if (logger.isDebugEnabled()) {
+//			logger.debug("Received: " + fromclient);
+//		}
 
 		String[] list = fromclient.split("\\r?\\n");
 		boolean needsShutdown = false;

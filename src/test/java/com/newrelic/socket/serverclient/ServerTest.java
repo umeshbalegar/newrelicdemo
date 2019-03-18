@@ -80,7 +80,7 @@ public class ServerTest extends TestCase{
 		    }
 		    
 		}catch(Exception e) {
-			if(privateServ != null && privateServ.status != ServerStatus.STOPPED) {
+			if(privateServ != null && privateServ.status.get() != ServerStatus.STOPPED) {
 				privateServ.shutDown();			
 			}			
 			e.printStackTrace();
@@ -129,7 +129,7 @@ public class ServerTest extends TestCase{
 		    }
 		    
 		}catch(Exception e) {
-			if(privateServ != null && privateServ.status != ServerStatus.STOPPED) {
+			if(privateServ != null && privateServ.status.get() != ServerStatus.STOPPED) {
 				privateServ.shutDown();			
 			}			
 			e.printStackTrace();

@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
 
@@ -28,7 +29,9 @@ public abstract class Server implements Runnable, IBaseProcess{
 
 	Thread thread;
 	
-	public ServerStatus status = ServerStatus.STOPPED;
+	public AtomicReference<ServerStatus> status = new AtomicReference<>(ServerStatus.STOPPED);
+	
+	protected final int defaultBufferSize = 32768;
 	
 	private InetSocketAddress listenAddress;
 	
@@ -59,7 +62,7 @@ public abstract class Server implements Runnable, IBaseProcess{
 		dataTracking = new HashMap<SocketChannel, ByteBuffer>();
 		reportExecutor  = Executors.newScheduledThreadPool(1);
 		clients = new AtomicInteger(0);
-		readBuffer = ByteBuffer.allocate(1024);
+		readBuffer = ByteBuffer.allocate(defaultBufferSize);
 		serverExecutor = Executors.newSingleThreadExecutor();
 		acceptExecutor = ServerUtil.getStandardExecService("AcceptableTask", 5, 5, new ArrayBlockingQueue<Runnable>(65500), Thread.NORM_PRIORITY);
 		init();
@@ -85,7 +88,7 @@ public abstract class Server implements Runnable, IBaseProcess{
 			return;
 
 		try {
-			status = ServerStatus.INITIALIZING;
+			status.getAndSet(ServerStatus.INITIALIZING);
 			selector = Selector.open();
 			serverChannel = ServerSocketChannel.open();
 			serverChannel.configureBlocking(false);
@@ -110,7 +113,7 @@ public abstract class Server implements Runnable, IBaseProcess{
 	 * @return current status of the server
 	 */
 	public ServerStatus getStatus(){
-		return status;
+		return status.get();
 	}
 	
 	/**
@@ -118,7 +121,7 @@ public abstract class Server implements Runnable, IBaseProcess{
 	 */
 	public void start(){
 		serverExecutor.execute(this);
-		status = ServerStatus.STARTED;
+		status.getAndSet(ServerStatus.STARTED);
 	}
 	
 	/**
@@ -127,7 +130,7 @@ public abstract class Server implements Runnable, IBaseProcess{
 	@Override
 	public void run() {
 		try {
-			status = ServerStatus.RUNNING;
+			status.getAndSet(ServerStatus.RUNNING);
 			logger.info("Starting Server...");
 			
 			//Sets up the Reporting Service 
@@ -156,16 +159,10 @@ public abstract class Server implements Runnable, IBaseProcess{
 
 					if (key.isAcceptable()) {
 						logger.info("Accepting connection");
-						status = ServerStatus.RUNNING;
+						status.getAndSet(ServerStatus.RUNNING);
 						ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
 						SocketChannel socketChannel = serverSocketChannel.accept();	
 						acceptExecutor.execute(new AcceptableTask(socketChannel, selector));
-//						accept(key);
-					}
-
-					if (key.isWritable()) {
-						logger.info("Writing...");
-						write(key);
 					}
 
 					if (key.isReadable()) {
@@ -179,53 +176,6 @@ public abstract class Server implements Runnable, IBaseProcess{
 		}finally {
 			shutDown();
 		}
-	}
-
-	/**
-	 * Method which writes back to the buffer , when communicating back to the client. 
-	 * @param key
-	 * @throws IOException
-	 */
-	public void write(SelectionKey key) throws IOException {
-
-		SocketChannel channel = (SocketChannel) key.channel();
-		ByteBuffer data = dataTracking.get(channel);
-		dataTracking.remove(channel);
-		int count = channel.write(ByteBuffer.wrap(data.array()));
-		if (count == 0) {
-			key.interestOps(SelectionKey.OP_WRITE);
-			return;
-		} else if (count > 0) {
-			key.interestOps(0);
-			key.interestOps(SelectionKey.OP_READ);
-		}
-
-	}
-
-	public void accept(SelectionKey key) throws IOException {
-		clients.getAndAdd(1);
-		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-		SocketChannel socketChannel = serverSocketChannel.accept();
-		
-		if (socketChannel == null) {
-			throw new IOException();
-		}		
-
-		socketChannel.configureBlocking(false);
-		
-		socketChannel.socket().setTcpNoDelay( true );
-			
-		SelectionKey skey = socketChannel.register(selector, SelectionKey.OP_READ);
-
-		byte[] hello = new String("Hello from server").getBytes();
-		dataTracking.put(socketChannel, ByteBuffer.wrap(hello));
-
-		try {
-			write(skey);
-		} catch (IOException e) {
-			logger.error("Problem in initial hello from Server  " + e);
-		}
-		
 	}
 
 	/**
@@ -257,23 +207,6 @@ public abstract class Server implements Runnable, IBaseProcess{
 		}
 	}
 
-	/**
-	 * Method which appends the data to be sent back to client in the buffer pool and calls write. 
-	 * @param key
-	 * @param data
-	 */
-	public void send(SelectionKey key, byte[] data) {
-		SocketChannel socketChannel = (SocketChannel) key.channel();
-		
-		dataTracking.put(socketChannel, ByteBuffer.wrap(data));
-		try {
-			write(key);
-		} catch (IOException e) {
-			logger.error("Problem sending acknowledgement " + e);
-			e.printStackTrace();
-		}
-	}
-
 
 	/**
 	 * Shutsdown the server
@@ -284,7 +217,7 @@ public abstract class Server implements Runnable, IBaseProcess{
 	public void shutDown() {
 		logger.info("Closing server down");
 
-		status = ServerStatus.STOPPING;
+		status.getAndSet(ServerStatus.STOPPING);
 		if (selector != null) {
 			try {
 				selector.close();
@@ -299,7 +232,7 @@ public abstract class Server implements Runnable, IBaseProcess{
 		ServerUtil.stop(acceptExecutor);
 		ServerUtil.stop(reportExecutor);
 		ServerUtil.stop(serverExecutor);
-		status = ServerStatus.STOPPED;
+		status.getAndSet(ServerStatus.STOPPED);
 		logger.info("All ShutDown");
 	}
 	

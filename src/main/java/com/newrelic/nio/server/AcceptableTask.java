@@ -40,8 +40,6 @@ public class AcceptableTask implements Runnable{
 		try {
 
 			socketChannel.configureBlocking(false);
-			s.setTcpNoDelay( true );
-				
 			socketChannel.register(selector, SelectionKey.OP_READ);
 						
 		}catch(IOException e) {

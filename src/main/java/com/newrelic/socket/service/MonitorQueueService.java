@@ -101,7 +101,6 @@ public class MonitorQueueService implements IService{
                 while(true) {
                     String eventData = null;
                     eventData = eventQueue.take();
-                    System.out.println("Process Event Data : Type : " + eventData);
         			pw.write(eventData + "\n");
         			pw.flush();
                 }
