@@ -9,7 +9,7 @@ import com.google.common.collect.Sets;
 
 /**
  * This task is generating the report and printing the report to the console.
- * 
+ * This class uses cachehandler and queue service to compute the requried reporting data.
  * @author umesh
  *
  */

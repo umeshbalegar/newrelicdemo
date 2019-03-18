@@ -1,5 +1,8 @@
 package com.newrelic.socket.serverclient;
 
+/**
+ * if class is the main Test sutie class.
+ */
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -14,6 +17,7 @@ import org.junit.runners.Suite;
    MonitorQueueServiceTest.class,
    ServerTest.class,
    ServerTestPoisonPill.class,
+   LoadTester.class
 })
 
 public class AppTest {}

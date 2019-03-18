@@ -1,5 +1,12 @@
 package com.newrelic.nio.server;
-
+/**
+ * Base Abstract class, which has all the required implementation for starting, operating and shutting down a server. 
+ * This calls runs on its own thread when start method is called. 
+ * before start creates all the required resources. 
+ * Implements Runnable and IBaseProcess which gives the base methods.
+ * key things to look for is the buffersize which defines the size of payload which the class can act upon. 
+ * 
+ */
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -125,7 +132,10 @@ public abstract class Server implements Runnable, IBaseProcess{
 	}
 	
 	/**
-	 * Main method, which 
+	 * Main method, which does the buld of operations for this class. 
+	 * - starts the reporting service which reports in every 10seonds. 
+	 * - processes each incoming requests and act based on the key type.  
+	 * - always running method until some exception happens and the server shutsdown.
 	 */
 	@Override
 	public void run() {

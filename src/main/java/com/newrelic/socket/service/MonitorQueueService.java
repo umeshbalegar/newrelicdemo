@@ -107,6 +107,7 @@ public class MonitorQueueService implements IService{
         	} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 				e.printStackTrace();
 			}
         }

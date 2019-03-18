@@ -1,5 +1,8 @@
 package com.newrelic.socket.serverclient;
-
+/**
+ * Testcase to check the NumberStorageHandler class,
+ * 3 situations provided for the parameterized test situation. 
+ */
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

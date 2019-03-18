@@ -1,5 +1,16 @@
 package com.newrelic.nio.server;
 
+/**
+ * This class will handle the Accept operation in a separate thread pool. 
+ * this class is created for meeting the criteria of having 5 concurrent threads at anytie to handle the incoming request. 
+ * Acceptable task if for those operations where OP_ACCEPT is true. 
+ * This class also sets the future query for OP_READ operations. 
+ * setTcpNoDeal is used to control the amount of buffering used when transferring data. 
+ * tries to send full data segments by waiting, if necessary, for enough writes to come through to fill up the segment. 
+ * 
+ */
+
+
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.channels.SelectionKey;

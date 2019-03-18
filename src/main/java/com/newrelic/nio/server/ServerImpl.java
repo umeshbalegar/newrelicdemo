@@ -1,5 +1,10 @@
 package com.newrelic.nio.server;
-
+/**
+ * Concrete implementation of Server. 
+ * This class needs to implement 2 methods
+ * - processBuffer : this method is a hook to provide the implementation for any specific data handling required. 
+ * - cleanUpResourceOnShutDown : clean up all the resources created when crateing this class. 
+ */
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
@@ -14,12 +19,23 @@ public class ServerImpl extends Server {
 	IEventHandler<String> numberHandler;
 	IEventHandler<Integer> batchTotalHandler;
 
+	/**
+	 * Constructor which initializes all the required resources. 
+	 * @param address
+	 * @param port
+	 */
 	public ServerImpl(String address, int port) {
 		super(address, port);
 		numberHandler = new NumberStorageHandler();
 		batchTotalHandler = new BatchTotalUpdateHandler();
 	}
 
+	/**
+	 * @param key : SelectionKey
+	 * @param channel: Channel
+	 * @param length : length of the information read so far. 
+	 * 
+	 */
 	@Override
 	public void processBuffer(SelectionKey key, SocketChannel channel, int length) throws IOException {
 
@@ -30,9 +46,9 @@ public class ServerImpl extends Server {
 		readBuffer.get(data, 0, length);
 		String fromclient = new String(data, 0, length, "UTF-8");
 
-//		if (logger.isDebugEnabled()) {
-//			logger.debug("Received: " + fromclient);
-//		}
+		if (logger.isDebugEnabled()) {
+			logger.debug("Received: " + fromclient);
+		}
 
 		String[] list = fromclient.split("\\r?\\n");
 		boolean needsShutdown = false;
@@ -79,11 +95,10 @@ public class ServerImpl extends Server {
 		}
 	}
 
-	public static void main(String[] args) {
-		ServerImpl server = new ServerImpl("localhost", 4000);
-		server.start();
-	}
-
+	/**
+	 * This metod is an override from abstract class 
+	 * cleans up all the resources intilized. 
+	 */
 	@Override
 	public void cleanUpResourceOnShutDown() {
 		if (batchTotalHandler != null) {

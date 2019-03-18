@@ -1,5 +1,8 @@
 package com.newrelic.socket.serverclient;
 
+/**
+ * Test for submitting the 2M keys and checking if all of them are processed or not.
+ */
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,6 +66,7 @@ public class LoadTester  extends TestCase {
 			assertEquals("The expected and file should match : ", true, numOfRecords);			
 			
 		}catch(InterruptedException e) {
+			Thread.currentThread().interrupt();
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

@@ -1,5 +1,8 @@
 package com.newrelic.socket.serverclient;
-
+/**
+ * Comprehensive set of Unit Tests for the function to kill the server when Poison pill message is sent
+ * "terminate" is the poisonpill message. 
+ */
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

@@ -1,5 +1,8 @@
 package com.newrelic.socket.serverclient;
 
+/**
+ * Utility class used for testing situations.
+ */
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -34,6 +37,7 @@ public class TestUtils {
             executor.awaitTermination(1, TimeUnit.SECONDS);
         }
         catch (InterruptedException e) {
+        	Thread.currentThread().interrupt();
             System.err.println("termination interrupted");
         }
         finally {

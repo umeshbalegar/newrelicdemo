@@ -66,72 +66,80 @@ public class AppStarter {
 		return s.toString();
 	}
 	
-	public static void main(String [] args) throws InterruptedException, ExecutionException {
+	public static void main(String [] args){
 		
-		boolean killServer = false;
-		if (args.length > 0 && args[0].equals("autoshutdown")){
-			killServer = true;
+		try {
+			boolean killServer = false;
+			if (args.length > 0 && args[0].equals("autoshutdown")){
+				killServer = true;
+			}
+			
+			System.out.println("Running the server which gets pinged with 100 numbers, ");
+			System.out.println("On providing autoshutdown servers shutsdown after 10s. This will enable you to see the report once.");
+			
+			//Start Server
+			Server serv = new ServerImpl("localhost", 4000);
+			serv.start();
+
+			
+			int size = 100;
+		    ExecutorService threads = Executors.newFixedThreadPool(size);
+		    List<Callable<Boolean>> torun = new ArrayList<>(size);
+		    for (int i = 0; i < size; i++) {
+		        torun.add(new DoPing(i));
+		    }
+		    
+		    // all tasks executed in different threads, at 'once'.
+		    List<Future<Boolean>> futures = threads.invokeAll(torun);
+
+		    // no more need for the threadpool
+		    threads.shutdown();
+
+		    // check the results of the tasks...throwing the first exception, if any.
+		    for (Future<Boolean> fut : futures) {
+		        fut.get();
+		    }
+		    
+		    
+		    Thread.sleep(10000);
+		    
+		    
+		    if(killServer) {
+			    //Sending only POISON_PILL
+			    ExecutorService threads1 = Executors.newFixedThreadPool(1);
+			    List<Callable<Boolean>> torun1 = new ArrayList<>(1);
+			    torun1.add(new Callable<Boolean>() {
+
+					@Override
+					public Boolean call() throws Exception {
+						NIOClient client = new NIOClient("localhost", 4000);
+						client.sendServer("\n");
+						return null;
+					}
+			    	
+			    });
+			    torun1.add(new Callable<Boolean>() {
+
+					@Override
+					public Boolean call() throws Exception {
+						NIOClient client = new NIOClient("localhost", 4000);
+						client.sendServer("terminate\n");
+						return null;
+					}
+			    	
+			    });
+			    List<Future<Boolean>> futures1 = threads1.invokeAll(torun1);
+			    threads1.shutdown();
+			    for(Future<Boolean> fut : futures1) {
+			    	fut.get();
+			    }	    	
+		    }			
+		}catch(InterruptedException e1) {
+			Thread.currentThread().interrupt();
+			e1.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
 		}
-		
-		System.out.println("Running the server which gets pinged with 100 numbers, ");
-		System.out.println("On providing autoshutdown servers shutsdown after 10s. This will enable you to see the report once.");
-		
-		//Start Server
-		Server serv = new ServerImpl("localhost", 4000);
-		serv.start();
 
-		
-		int size = 100;
-	    ExecutorService threads = Executors.newFixedThreadPool(size);
-	    List<Callable<Boolean>> torun = new ArrayList<>(size);
-	    for (int i = 0; i < size; i++) {
-	        torun.add(new DoPing(i));
-	    }
-	    
-	    // all tasks executed in different threads, at 'once'.
-	    List<Future<Boolean>> futures = threads.invokeAll(torun);
-
-	    // no more need for the threadpool
-	    threads.shutdown();
-
-	    // check the results of the tasks...throwing the first exception, if any.
-	    for (Future<Boolean> fut : futures) {
-	        fut.get();
-	    }
-	    
-	    
-	    Thread.sleep(10000);
-	    
-	    
-	    if(killServer) {
-		    //Sending only POISON_PILL
-		    ExecutorService threads1 = Executors.newFixedThreadPool(1);
-		    List<Callable<Boolean>> torun1 = new ArrayList<>(1);
-		    torun1.add(new Callable<Boolean>() {
-
-				@Override
-				public Boolean call() throws Exception {
-					NIOClient client = new NIOClient("localhost", 4000);
-					client.sendServer("\n");
-					return null;
-				}
-		    	
-		    });
-		    torun1.add(new Callable<Boolean>() {
-
-				@Override
-				public Boolean call() throws Exception {
-					NIOClient client = new NIOClient("localhost", 4000);
-					client.sendServer("terminate\n");
-					return null;
-				}
-		    	
-		    });
-		    List<Future<Boolean>> futures1 = threads1.invokeAll(torun1);
-		    threads1.shutdown();
-		    for(Future<Boolean> fut : futures1) {
-		    	fut.get();
-		    }	    	
-	    }
 	}
 }

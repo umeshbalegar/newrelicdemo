@@ -1,5 +1,9 @@
 package com.newrelic.socket.service;
 
+/**
+ * Class which implements the inmemory cache for the application
+ * The concurrent hashmap will store all the unique numbers which has been processed so far. 
+ */
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 

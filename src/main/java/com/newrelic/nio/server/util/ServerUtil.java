@@ -1,5 +1,9 @@
 package com.newrelic.nio.server.util;
 
+/**
+ * Utility class for server package. 
+ * Common functions will be available for every class inside this package and beyond. 
+ */
 import java.nio.channels.Selector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -79,6 +83,7 @@ public class ServerUtil {
             executor.awaitTermination(1, TimeUnit.SECONDS);
         }
         catch (InterruptedException e) {
+        	Thread.currentThread().interrupt();
             System.err.println("termination interrupted");
         }
         finally {
