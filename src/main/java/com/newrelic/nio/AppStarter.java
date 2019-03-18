@@ -73,7 +73,8 @@ public class AppStarter {
 			killServer = true;
 		}
 		
-		System.out.println("Running the server which gets pinged with 100 numbers");
+		System.out.println("Running the server which gets pinged with 100 numbers, ");
+		System.out.println("On providing autoshutdown servers shutsdown after 10s. This will enable you to see the report once.");
 		
 		//Start Server
 		Server serv = new ServerImpl("localhost", 4000);
@@ -106,6 +107,16 @@ public class AppStarter {
 		    //Sending only POISON_PILL
 		    ExecutorService threads1 = Executors.newFixedThreadPool(1);
 		    List<Callable<Boolean>> torun1 = new ArrayList<>(1);
+		    torun1.add(new Callable<Boolean>() {
+
+				@Override
+				public Boolean call() throws Exception {
+					NIOClient client = new NIOClient("localhost", 4000);
+					client.sendServer("\n");
+					return null;
+				}
+		    	
+		    });
 		    torun1.add(new Callable<Boolean>() {
 
 				@Override
