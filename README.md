@@ -111,7 +111,27 @@ cat ~/numbers.log
 (this prints the file on console)
 ```
 
-All the required test files are in test folder. 
+# Testing
+All the required test files are in test folder. I have used jUnit4 for my tests. 
+Below are the test files which will help you get started. 
+- AppTest.java (is the suite)
+This suite embeds all the functional tests below. 
+- MonitorQueueServiceTest.java
+    Basic Test required for testing the queue operation and validating the filecreation and entires. 
+    
+- NumberStorageHandlerTest.java
+    Basic Test for the IEventHandler(NumberStorageHandler) for storing the numbers and verifying a unique value is stored. 
+    
+- ServerTest.java
+    Test for Server start and stop and concurrent users test. 
+    
+- ServerTestPoisonPill.java
+    Test for "terminate\n" string which should shut the server down. 
+    
+- LoadTester.java
+    Test which generates 2M records and posts them to the server, 
+    Checks for the entries in the file and time taken to complete the request
+
 
 
 
