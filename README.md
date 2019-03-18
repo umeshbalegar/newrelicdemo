@@ -16,7 +16,7 @@
   - how many unique number sent to the server in the 10s time frame. (in the batch)
   - How many duplicates were sent in the batch. 
   - Totally how many numbers are processed so far since the server started. 
- 
+- Keeping performance in mind, (i.e 2M numbers in 10s), this solution limits the payload to include max of 3200 numbers which is same as the buffer size. Any additional numbers passed causes Buffer Overflow exception. I do have the solution to take larger inputs but the performance is not as good as limiting the paylod to buffer size, as it demands multiple reads from the channel which is a costly operation w.r.t time. 
 
 ### Server starter file is ServerImpl.java in com.newrelic.nio.server package
 This class is a concrete implementation of the server, which provides the implementation for processing the data and cleanup on shutdown methods. 
