@@ -1,5 +1,7 @@
 package com.newrelic.socket.serverclient;
-
+/**
+ * TestRunner class to run the test cases as a suite. 
+ */
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;

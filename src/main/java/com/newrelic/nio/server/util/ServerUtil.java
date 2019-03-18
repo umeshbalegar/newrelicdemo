@@ -19,6 +19,16 @@ public class ServerUtil {
 	
 	final static Logger logger = Logger.getLogger(ServerUtil.class);
 	
+	/**
+	 * Method which provides the common thread pool for executing the Accptable Taxk.
+	 * This was created to handle the 5 concurrent users in mind. 
+	 * @param name
+	 * @param corePoolSize
+	 * @param maxPoolSize
+	 * @param taskQueue
+	 * @param threadPriority
+	 * @return
+	 */
 	public static ExecutorService getStandardExecService(final String name, final int corePoolSize,
 			final int maxPoolSize, BlockingQueue<Runnable> taskQueue, final int threadPriority) {
 		
@@ -41,16 +51,6 @@ public class ServerUtil {
 					if (executor.isShutdown() || executor.isTerminated() || executor.isTerminating()) {
 						return;
 					}
-
-					final long SLEEP_TIME = Math.round((Math.random() * 400D) + 1);
-					try {
-						Thread.sleep(SLEEP_TIME);
-					} catch (Throwable ignore) {
-						if (logger.isDebugEnabled()) {
-							ignore.printStackTrace();
-						}
-					}
-					logger.error("RejectedExecutionHandler for " + name + " WorkerTask slept for " + SLEEP_TIME);
 					executor.getQueue().put(r);
 				} catch (Throwable t) {
 					t.printStackTrace();
@@ -64,7 +64,10 @@ public class ServerUtil {
 		return texecutor;
 	}
 	
-	
+	/**
+	 * Method which cleans up the selector. 
+	 * @param selector
+	 */
 	public static void closeSelector(Selector selector) {
         if (selector != null) {
             try {
@@ -77,6 +80,10 @@ public class ServerUtil {
         }
 	}
 	
+	/**
+	 * Utility method which stops the executor service gracefully.
+	 * @param executor
+	 */
     public static void stop(ExecutorService executor) {
         try {
             executor.shutdown();

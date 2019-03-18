@@ -36,11 +36,11 @@ public class LoadTester  extends TestCase {
 			long start = System.currentTimeMillis();
 			
 			for(int number=0; number<2000000; number=number+3200) {
-		    	NIOClient client = new NIOClient("localhost", 4000);
-		    	String input = TestUtils.generateZeroPaddedNumbers(number);
-		    	client.sendServer(input);		
+		        NIOClient client = new NIOClient("localhost", 4000);
+		        String input = TestUtils.generateZeroPaddedNumbers(number);
+		        client.sendServer(input);		
 			}
-			
+
 			long end = System.currentTimeMillis();
 			System.out.println("Time take for 2M records : "+(end - start));	
 			
@@ -55,7 +55,7 @@ public class LoadTester  extends TestCase {
 			while(line != null) {
 				line = in.readLine();
 				if(line != null && !line.trim().equals("")) {
-					count++;	
+					count++;
 				}
 			}
 

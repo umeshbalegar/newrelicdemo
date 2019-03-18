@@ -1,5 +1,9 @@
 package com.newrelic.socket.serverclient;
 
+/**
+ * Test class for the MonitorQueueService singleton
+ * checks for its validity. 
+ */
 import java.io.File;
 
 import org.junit.After;

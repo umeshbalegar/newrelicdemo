@@ -22,9 +22,9 @@ import org.apache.log4j.Logger;
 import com.newrelic.nio.server.util.ServerUtil;
 
 public class AcceptableTask implements Runnable{
-	final static Logger logger = Logger.getLogger(AcceptableTask.class);
+    final static Logger logger = Logger.getLogger(AcceptableTask.class);
 	
-	final Selector selector;
+    final Selector selector;
 	
     SocketChannel socketChannel;
 
@@ -49,7 +49,6 @@ public class AcceptableTask implements Runnable{
 	@Override
 	public void run() {
 		try {
-
 			socketChannel.configureBlocking(false);
 			socketChannel.register(selector, SelectionKey.OP_READ);
 						

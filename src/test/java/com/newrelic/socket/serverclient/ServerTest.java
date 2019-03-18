@@ -1,6 +1,6 @@
 package com.newrelic.socket.serverclient;
 /**
- * Comprehensive set of Unit Tests for the Server start and shutdown functions
+ * Comprehensive set of Unit Tests for the Server start and shutdown functions along with concurrent connections.
  */
 import java.util.ArrayList;
 import java.util.List;
