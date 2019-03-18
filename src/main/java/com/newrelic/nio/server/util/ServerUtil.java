@@ -84,18 +84,18 @@ public class ServerUtil {
 	 * Utility method which stops the executor service gracefully.
 	 * @param executor
 	 */
-    public static void stop(ExecutorService executor) {
-        try {
+     public static void stop(ExecutorService executor) {
+       try {
             executor.shutdown();
             executor.awaitTermination(1, TimeUnit.SECONDS);
-        }
-        catch (InterruptedException e) {
-        	Thread.currentThread().interrupt();
-            System.err.println("termination interrupted");
+       }
+       catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("termination interrupted");
         }
         finally {
             if (!executor.isTerminated()) {
-                System.err.println("killing non-finished tasks");
+                logger.error("killing non-finished tasks");
             }
             executor.shutdownNow();
         }
